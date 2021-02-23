@@ -11,8 +11,19 @@ class MainActivity : Activity() {
         setContentView(recyclerView)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-            adapter = MyAdapter { view, position ->
-                printCacheInfo(recyclerView)
+            adapter = MyAdapter(10).apply {
+                onItemClick = { _, position ->
+                    recyclerView.adapter?.notifyItemRemoved(position)
+                    printCacheInfo(recyclerView)
+                }
+                preloadItemCount = 1
+                onPreload = {
+                    if (dataList.size < 20) {
+                        dataList += listOf(*Array(5) { dataList.size + it })
+                        Log.d("gxd", "dataList = ${dataList.size}")
+                        post { notifyDataSetChanged() }
+                    }
+                }
             }
         }
     }

@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import java.util.*
 
-class MyAdapter(private val onItemClick: (View, Int) -> Unit) : RecyclerView.Adapter<ViewHolder>() {
-    private val dataList by lazy { listOf(*Array(20) { it }) }
+class MyAdapter(private val count: Int) : PreloadAdapter() {
+    var onItemClick: ((View, Int) -> Unit)? = null
+    val dataList by lazy { listOf(*Array(count) { it + 1 }).toMutableList() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val holder = MyViewHolder(parent, onItemClick)
@@ -16,7 +17,8 @@ class MyAdapter(private val onItemClick: (View, Int) -> Unit) : RecyclerView.Ada
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.e("gxd", "onBindViewHolder...${holder}")
+        super.onBindViewHolder(holder, position)
+        Log.e("gxd", "onBindViewHolder...$holder...${position + 1}")
         if (holder is MyViewHolder) {
             holder.onBindViewHolder((dataList[position]).toString())
         }
